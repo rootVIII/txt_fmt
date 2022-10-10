@@ -1,7 +1,7 @@
 ### Reformat a text file with a maximum line-length
 
 
-- Compile project on Windows:  <pre><code>cl /Fe: text_format.exe text_format\\*.cpp</code></pre>
+- Compile project on Windows:  <pre><code>cl /Fe: txt_fmt.exe txt_fmt\\*.cpp</code></pre>
 
 - Provide target file path and max line-length when executing:  <pre><code>text_format.exe file.txt 79</code></pre>
 

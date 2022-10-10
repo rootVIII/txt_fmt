@@ -2,26 +2,63 @@
 #include <iostream>
 #include <string>
 
-std::unique_ptr<TxtFmt> generate_object(const std::string &path, unsigned long long max_line)
+
+std::unique_ptr<TxtFmt> generate_object(const std::string &path, int max_chars)
 {
-    auto txt_fmt = std::make_unique<TxtFmt>(path, max_line);
+    auto txt_fmt = std::make_unique<TxtFmt>(path, max_chars);
     return txt_fmt;
 }
+
+
+bool is_valid_file(const std::string &file_path)
+{
+    struct stat file_name_buff{};
+    return stat(file_path.c_str(), &file_name_buff) == 0;
+}
+
+
+int validate_digit(const std::string &digit)
+{
+    // stoi throws invalid_argument error if not a string digit
+    const int max_line_chars = std::stoi(digit);
+    
+    if (max_line_chars < 1 || max_line_chars > 400) 
+    {
+        throw std::invalid_argument("max-chars arg is not between 1 and 400");
+    }
+    return max_line_chars;
+}
+
 
 int main(const int argc, char* argv[])
 {
     if (argc != 3)
     {
-        std::cerr << "Provide a path to a plain text (.txt) file and max line-length";
+        std::cerr << "error: provide a path to a plain text (.txt) file and max line-length";
         exit(1);  // NOLINT(concurrency-mt-unsafe)
     }
 
-    // TODO: add check to ensure file exists and is plain txt
-    // TODO: add check to ensure max_line is between 1 and 400
+    const std::string input_file = *(argv + 1);
+    int max_chars_arg = 0;
     
     try
     {
-        const std::unique_ptr<TxtFmt> txt_fmt = generate_object(*(argv + 1), static_cast<unsigned long long>(std::stoi(*(argv + 2))));
+        if (!(is_valid_file(input_file)))
+        {
+            throw std::invalid_argument("input filepath arg does not exist");
+        }
+        max_chars_arg = validate_digit(*(argv + 2));
+    }
+    catch (const std::invalid_argument &err)
+    {
+        std::cerr << "error: " << err.what() << std::endl;
+        exit(1);  // NOLINT(concurrency-mt-unsafe)
+    }
+
+    const std::unique_ptr<TxtFmt> txt_fmt = generate_object(input_file, max_chars_arg);
+    
+    try
+    {
         const std::string file_data = txt_fmt->read_file_in();
         txt_fmt->process_text(file_data);
     }
@@ -29,7 +66,7 @@ int main(const int argc, char* argv[])
     {
         // TODO: remove file if it was created (add get method to retrieve file name)
         
-        std::cerr << "Error: " << err.what() << std::endl;
+        std::cerr << "error: " << err.what() << std::endl;
         exit(1);  // NOLINT(concurrency-mt-unsafe)
     }
     

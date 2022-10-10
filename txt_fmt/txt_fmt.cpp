@@ -5,7 +5,7 @@
 #include <sstream>
 
 
-TxtFmt::TxtFmt(std::string path, const unsigned long long max_line) : path_(std::move(path)), max_line_(max_line) 
+TxtFmt::TxtFmt(std::string path, const int max_chars) : path_(std::move(path)), max_chars_(max_chars) 
 {
     // TODO add datestamp here
 }
@@ -20,7 +20,7 @@ std::string TxtFmt::read_file_in() const
     }
     else
     {
-        throw std::runtime_error("Failed to open file for read operation");
+        throw std::runtime_error("failed to open file for read operation");
     }
     file_handle.close();
     return buffer.str();
@@ -35,7 +35,7 @@ void TxtFmt::process_text(const std::string &file_data) const
     file_handle.open(path_ + ".out");
     if (!(file_handle.is_open()))
     {
-        throw std::runtime_error("Failed to open file for write operation");
+        throw std::runtime_error("failed to open file for write operation");
     }
 
     std::vector<std::string> text_blocks;
@@ -59,15 +59,18 @@ void TxtFmt::process_text(const std::string &file_data) const
             for (const std::sregex_token_iterator end; iter_spaces != end; ++iter_spaces)
             {
                 std::string word = *iter_spaces;
+                if (word.length() > static_cast<unsigned long long>(max_chars_))
+                {
+                    file_handle.close();
+                    throw std::invalid_argument("words in input text cannot exceed max-chars");
+                }
 
-                // TODO: Check if word is longer than max_line_, throw exception if too long and close the open file handle
-                
                 if (word.length() < 1)
                 {
                     word = " ";
                 }
                 
-                if (current_line.length() + word.length() > max_line_)
+                if (current_line.length() + word.length() > static_cast<unsigned long long>(max_chars_))
                 {
                     file_handle << current_line << "\n";
                     current_line = word;

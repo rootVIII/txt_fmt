@@ -8,7 +8,7 @@ class TxtFmt
 {
 
 public:
-    explicit TxtFmt(std::string path, unsigned long long max_line);
+    explicit TxtFmt(std::string path, int max_chars);
     // TODO: possibly move read_file_in() to private:
     std::string read_file_in() const;
     void process_text(const std::string &file_data) const;
@@ -18,7 +18,8 @@ public:
 
 private:
     std::string path_;
-    unsigned long long max_line_;
+    int max_chars_;
+    
 };
 
 #endif

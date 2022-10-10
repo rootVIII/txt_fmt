@@ -17,7 +17,7 @@ int main(const int argc, char* argv[])
     }
 
     // TODO: add check to ensure file exists and is plain txt
-    // TODO: add check to ensure max_line is between 1 and 300
+    // TODO: add check to ensure max_line is between 1 and 400
     
     try
     {

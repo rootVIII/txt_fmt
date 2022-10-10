@@ -2,30 +2,28 @@
 #include <iostream>
 #include <string>
 
-std::unique_ptr<TxtFmt> generate_object(const std::string &file_path)
+std::unique_ptr<TxtFmt> generate_object(const std::string &path, unsigned long long max_line)
 {
-    auto file_io = std::make_unique<TxtFmt>(file_path);
-    return file_io;
+    auto txt_fmt = std::make_unique<TxtFmt>(path, max_line);
+    return txt_fmt;
 }
 
 int main(const int argc, char* argv[])
 {
-    // TODO: add max_line_ as an arg
-    if (argc != 2)
+    if (argc != 3)
     {
-        std::cerr << "Provide a path to a plain text (.txt) file";
+        std::cerr << "Provide a path to a plain text (.txt) file and max line-length";
         exit(1);  // NOLINT(concurrency-mt-unsafe)
     }
 
     // TODO: add check to ensure file exists and is plain txt
     // TODO: add check to ensure max_line is between 1 and 300
-
+    
     try
     {
-        const std::unique_ptr<TxtFmt> file_io = generate_object(*++argv);
-        const std::string file_data = file_io->read_file_in();
-        // std::cout << file_data << std::endl;
-        file_io->process_text(file_data);
+        const std::unique_ptr<TxtFmt> txt_fmt = generate_object(*(argv + 1), static_cast<unsigned long long>(std::stoi(*(argv + 2))));
+        const std::string file_data = txt_fmt->read_file_in();
+        txt_fmt->process_text(file_data);
     }
     catch (const std::exception &err)
     {

@@ -5,16 +5,14 @@
 #include <sstream>
 
 
-TxtFmt::TxtFmt(std::string path) : file_path_(std::move(path))
+TxtFmt::TxtFmt(std::string path, const unsigned long long max_line) : path_(std::move(path)), max_line_(max_line) 
 {
-    // TODO remove max line and add datestamp here
-    
-    max_line = 79;
+    // TODO add datestamp here
 }
 
 std::string TxtFmt::read_file_in() const
 {
-    std::ifstream file_handle(file_path_);
+    std::ifstream file_handle(path_);
     std::stringstream buffer;
     if (file_handle.is_open())
     {
@@ -34,7 +32,7 @@ void TxtFmt::process_text(const std::string &file_data) const
     
     // TODO: add datestamp instead of .out
     
-    file_handle.open(file_path_ + ".out");
+    file_handle.open(path_ + ".out");
     if (!(file_handle.is_open()))
     {
         throw std::runtime_error("Failed to open file for write operation");
@@ -69,7 +67,7 @@ void TxtFmt::process_text(const std::string &file_data) const
                     word = " ";
                 }
                 
-                if (current_line.length() + word.length() > max_line)
+                if (current_line.length() + word.length() > max_line_)
                 {
                     file_handle << current_line << "\n";
                     current_line = word;

@@ -19,14 +19,21 @@ bool is_valid_file(const std::string &file_path)
 
 int validate_digit(const std::string &digit)
 {
-    // stoi throws invalid_argument error if not a string digit
-    const int max_line_chars = std::stoi(digit);
-    
-    if (max_line_chars < 1 || max_line_chars > 400) 
+    try
     {
-        throw std::invalid_argument("max-chars arg is not between 1 and 400");
+        const int max_line_chars = std::stoi(digit);
+        if (max_line_chars < 1 || max_line_chars > 400) 
+        {
+            throw std::invalid_argument("max-chars arg is not between 1 and 400");
+        }
+        return max_line_chars;
     }
-    return max_line_chars;
+    catch(const std::exception &err)
+    {
+        (void)err;
+        throw std::invalid_argument("max-chars arg not a valid integer between 1 & 400");
+    }
+    
 }
 
 
@@ -34,12 +41,13 @@ int main(const int argc, char* argv[])
 {
     if (argc != 3)
     {
-        std::cerr << "error: provide a path to a plain text (.txt) file and max line-length";
+        std::cerr << "error: provide a path to a plain-text file & a max line-length\n";
+        std::cerr << "usage: txt_fmt <file-path> <max-chars-per-line>  txt_fmt test.txt 79\n";
         exit(1);  // NOLINT(concurrency-mt-unsafe)
     }
 
     const std::string input_file = *(argv + 1);
-    int max_chars_arg = 0;
+    int max_chars_arg;
     
     try
     {

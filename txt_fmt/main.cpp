@@ -33,7 +33,6 @@ int validate_digit(const std::string &digit)
         (void)err;
         throw std::invalid_argument("max-chars arg not a valid integer between 1 & 400");
     }
-    
 }
 
 

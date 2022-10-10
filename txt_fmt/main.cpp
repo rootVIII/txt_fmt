@@ -17,6 +17,9 @@ int main(const int argc, char* argv[])
         exit(1);  // NOLINT(concurrency-mt-unsafe)
     }
 
+    // TODO: add check to ensure file exists and is plain txt
+    // TODO: add check to ensure max_line is between 1 and 300
+
     try
     {
         const std::unique_ptr<TxtFmt> file_io = generate_object(*++argv);
@@ -26,7 +29,7 @@ int main(const int argc, char* argv[])
     }
     catch (const std::exception &err)
     {
-        // TODO: check if file is open?
+        // TODO: remove file if it was created (add get method to retrieve file name)
         
         std::cerr << "Error: " << err.what() << std::endl;
         exit(1);  // NOLINT(concurrency-mt-unsafe)

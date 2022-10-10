@@ -8,6 +8,7 @@
 TxtFmt::TxtFmt(std::string path) : file_path_(std::move(path))
 {
     // TODO remove max line and add datestamp here
+    
     max_line = 79;
 }
 
@@ -30,7 +31,9 @@ std::string TxtFmt::read_file_in() const
 void TxtFmt::process_text(const std::string &file_data) const
 {
     std::ofstream file_handle;
+    
     // TODO: add datestamp instead of .out
+    
     file_handle.open(file_path_ + ".out");
     if (!(file_handle.is_open()))
     {
@@ -59,7 +62,7 @@ void TxtFmt::process_text(const std::string &file_data) const
             {
                 std::string word = *iter_spaces;
 
-                // TODO: Check if word is longer than max_line_, throw exception if too long
+                // TODO: Check if word is longer than max_line_, throw exception if too long and close the open file handle
                 
                 if (word.length() < 1)
                 {

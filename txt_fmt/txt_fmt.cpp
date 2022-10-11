@@ -81,7 +81,7 @@ void TxtFmt::process_text(const std::string &file_data) const
                 }
 
                 if (word != " ")
-                    current_line.append(" ");
+                    current_line.append(" ");  // TODO: check if at last char
             }
         }
     }

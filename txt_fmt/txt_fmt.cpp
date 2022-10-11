@@ -8,6 +8,12 @@
 TxtFmt::TxtFmt(std::string path, const int max_chars) : path_(std::move(path)), max_chars_(max_chars) 
 {
     // TODO add datestamp here
+    output_file_path = path_ + ".out";
+}
+
+std::string TxtFmt::get_output_file_path() const
+{
+    return output_file_path;
 }
 
 std::string TxtFmt::read_file_in() const
@@ -29,30 +35,26 @@ std::string TxtFmt::read_file_in() const
 void TxtFmt::process_text(const std::string &file_data) const
 {
     std::ofstream file_handle;
-    
-    // TODO: add datestamp instead of .out
-    
-    file_handle.open(path_ + ".out");
+    file_handle.open(output_file_path);
     if (!(file_handle.is_open()))
-    {
         throw std::runtime_error("failed to open file for write operation");
-    }
+    
 
     std::vector<std::string> text_blocks;
-    const std::regex pattern_newlines(R"(\n)");
-    std::copy(std::sregex_token_iterator(file_data.begin(), file_data.end(), pattern_newlines, -1),
+    const std::regex new_lines(R"(\n)");
+    std::copy(std::sregex_token_iterator(file_data.begin(), file_data.end(), new_lines, -1),
         std::sregex_token_iterator(), std::back_inserter(text_blocks));
 
-    for (auto& text_block : text_blocks)
+    for (auto& text : text_blocks)
     {
-        if (text_block.empty())
+        if (text.empty())
         {
             file_handle << "\n";
         }
         else
         {
             const std::regex spaces(R"([\s\t])");
-            std::sregex_token_iterator iter_spaces(text_block.begin(),  text_block.end(), spaces, -1);
+            std::sregex_token_iterator iter_spaces(text.begin(),  text.end(), spaces, -1);
 
             std::string current_line;
 
@@ -66,11 +68,9 @@ void TxtFmt::process_text(const std::string &file_data) const
                 }
 
                 if (word.length() < 1)
-                {
                     word = " ";
-                }
                 
-                if (current_line.length() + word.length() > static_cast<unsigned long long>(max_chars_))
+                if (current_line.length() + word.length() + 1 > static_cast<unsigned long long>(max_chars_))
                 {
                     file_handle << current_line << "\n";
                     current_line = word;
@@ -81,9 +81,7 @@ void TxtFmt::process_text(const std::string &file_data) const
                 }
 
                 if (word != " ")
-                {
                     current_line.append(" ");
-                }
             }
         }
     }

@@ -9,12 +9,10 @@ class TxtFmt
 
 public:
     explicit TxtFmt(std::string path, int max_chars);
-    // TODO: possibly move read_file_in() to private:
+    std::string get_output_file_path() const;
     std::string read_file_in() const;
     void process_text(const std::string &file_data) const;
-    // unsigned long long max_line;
-
-    // TODO: add public getter to retrieve the new filepath with datestamp
+    std::string output_file_path;
 
 private:
     std::string path_;

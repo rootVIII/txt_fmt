@@ -1,6 +1,7 @@
 #include "txt_fmt.h"
 #include <iostream>
 #include <string>
+#include <windows.h>
 
 
 std::unique_ptr<TxtFmt> generate_object(const std::string &path, int max_chars)
@@ -71,7 +72,9 @@ int main(const int argc, char* argv[])
     }
     catch (const std::exception &err)
     {
-        // TODO: remove file if it was created (add get method to retrieve file name)
+        const std::string output_file_path = txt_fmt->get_output_file_path();
+        if (is_valid_file(output_file_path))
+            DeleteFileA(output_file_path.c_str());
         
         std::cerr << "error: " << err.what() << std::endl;
         exit(1);  // NOLINT(concurrency-mt-unsafe)

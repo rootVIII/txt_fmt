@@ -50,40 +50,43 @@ void TxtFmt::process_text(const std::string &file_data) const
         if (text.empty())
         {
             file_handle << "\n";
+            continue;
         }
-        else
+       
+        const std::regex spaces(R"([\s\t])");
+        std::sregex_token_iterator iter_spaces(text.begin(),  text.end(), spaces, -1);
+
+        std::string current_line;
+        int word_index = 0;
+        for (const std::sregex_token_iterator end; iter_spaces != end; ++iter_spaces)
         {
-            const std::regex spaces(R"([\s\t])");
-            std::sregex_token_iterator iter_spaces(text.begin(),  text.end(), spaces, -1);
-
-            std::string current_line;
-
-            for (const std::sregex_token_iterator end; iter_spaces != end; ++iter_spaces)
+            std::string word = *iter_spaces;
+            if (word.length() > static_cast<unsigned long long>(max_chars_))
             {
-                std::string word = *iter_spaces;
-                if (word.length() > static_cast<unsigned long long>(max_chars_))
-                {
-                    file_handle.close();
-                    throw std::invalid_argument("words in input text cannot exceed max-chars");
-                }
-
-                if (word.length() < 1)
-                    word = " ";
-                
-                if (current_line.length() + word.length() + 1 > static_cast<unsigned long long>(max_chars_))
-                {
-                    file_handle << current_line << "\n";
-                    current_line = word;
-                }
-                else
-                {
-                    current_line.append(word);
-                }
-
-                if (word != " ")
-                    current_line.append(" ");  // TODO: check if at last char
+                file_handle.close();
+                throw std::invalid_argument("words in input text cannot exceed max-chars");
             }
+
+            if (word.length() < 1)
+                word = " ";
+            
+            if (current_line.length() + word.length() + 1 > static_cast<unsigned long long>(max_chars_))
+            {
+                file_handle << current_line << "\n";
+                current_line = word;
+            }
+            else if (word_index > 0 && word != " ")
+            {
+                current_line.append(" " + word);
+            }
+            else
+            {
+                current_line.append(word);
+            }
+
+            word_index++;
         }
+        file_handle << current_line << std::endl;
     }
 
     file_handle.close();

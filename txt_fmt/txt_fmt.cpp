@@ -21,13 +21,10 @@ std::string TxtFmt::read_file_in() const
     std::ifstream file_handle(path_);
     std::stringstream buffer;
     if (file_handle.is_open())
-    {
         buffer << file_handle.rdbuf();
-    }
     else
-    {
         throw std::runtime_error("failed to open file for read operation");
-    }
+    
     file_handle.close();
     return buffer.str();
 }

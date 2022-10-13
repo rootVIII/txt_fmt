@@ -14,6 +14,7 @@ std::string get_date_str()
         throw std::runtime_error("system error occurred while retrieving local time");
     std::string datestamp;
     const auto stamp = std::string(tm_buff);
+    // TODO: use date fmt string
     for (auto &letter : stamp)
     {
         if (letter == 0x20)

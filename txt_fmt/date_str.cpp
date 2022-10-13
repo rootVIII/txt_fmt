@@ -1,26 +1,20 @@
 ﻿#include "date_str.h"
 #include <ctime>
-#include <chrono>
 #include <stdexcept>
 #include <string>
 
 
 std::string get_date_str()
 {
-    const auto time_point = std::chrono::system_clock::now();
-    const auto sys_time = std::chrono::system_clock::to_time_t(time_point);
-    char tm_buff[30];
-    if (ctime_s(tm_buff, sizeof(tm_buff), &sys_time) != 0)
+    std::tm time_info {};
+    const auto timer = std::time(nullptr);
+    const errno_t error = localtime_s(&time_info, &timer);
+    if (error)
         throw std::runtime_error("system error occurred while retrieving local time");
-    std::string datestamp;
-    const auto stamp = std::string(tm_buff);
-    // TODO: use date fmt string
-    for (auto &letter : stamp)
-    {
-        if (letter == 0x20)
-            datestamp += '_';
-        else if (letter != 0x0A && letter != 0x3A)
-            datestamp += letter;
-    }
-    return datestamp;
+
+    char buffer[32];
+    if (!(std::strftime(buffer, 32, "%d-%m-%Y_%H%M%S", &time_info)))
+        throw std::runtime_error("system error occurred while setting local time buffer");
+
+    return buffer;
 }

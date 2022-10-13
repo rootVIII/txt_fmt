@@ -154,10 +154,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="date_str.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="txt_fmt.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="date_str.h" />
     <ClInclude Include="txt_fmt.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

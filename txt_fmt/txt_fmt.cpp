@@ -1,4 +1,5 @@
-﻿#include "txt_fmt.h"
+﻿#include "date_str.h"
+#include "txt_fmt.h"
 #include <ctime>
 #include <chrono>
 #include <fstream>
@@ -10,22 +11,7 @@
 
 TxtFmt::TxtFmt(std::string path, const int max_chars) : path_(std::move(path)), max_chars_(max_chars) 
 {
-    const auto start = std::chrono::system_clock::now();
-    const auto legacy_start = std::chrono::system_clock::to_time_t(start);
-    char tm_buff[30];
-    if (ctime_s(tm_buff, sizeof(tm_buff), &legacy_start) != 0)
-        throw std::runtime_error("system error occurred while retrieving local time");
-    std::string datestamp;
-    const auto stamp = std::string(tm_buff);
-    for (auto &letter : stamp)
-    {
-        if (letter == 0x20)
-            datestamp += '_';
-        else if (letter != 0x0A && letter != 0x3A)
-            datestamp += letter;
-    }
-
-    output_file_path = path_ + "." + datestamp;
+    output_file_path = path_ + "." + get_date_str();
 }
 
 std::string TxtFmt::get_output_file_path() const

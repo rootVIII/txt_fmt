@@ -3,7 +3,7 @@
 
 - Compile project on Windows:  <pre><code>cl /Fe: txt_fmt.exe txt_fmt\\*.cpp</code></pre>
 
-- Provide target file path and max line-length when executing:  <pre><code>text_format.exe file.txt 79</code></pre>
+- Provide target file path and max line-length when executing:  <pre><code>txt_fmt.exe file.txt 79</code></pre>
 
 - A new file with a datestamp suffix will be created in the same location as the target file
 
